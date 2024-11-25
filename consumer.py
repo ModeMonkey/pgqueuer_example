@@ -13,7 +13,7 @@ async def main() -> PgQueuer:
     connection = await asyncpg.connect(
         user="test1234",
         password="test1234",
-        database="postgres",
+        database="test_pgqueuer",
         host="localhost",
         port=5332,
     )
@@ -24,11 +24,13 @@ async def main() -> PgQueuer:
     @pgq.entrypoint("fetch")
     async def process_message(job: Job) -> None:
         print(f"Processed message: {job!r}")
+        print()
 
     # Define and register recurring tasks using cron expressions
     # The cron expression "* * * * *" means the task will run every minute
     @pgq.schedule("scheduled_every_minute", "* * * * *")
     async def scheduled_every_minute(schedule: Schedule) -> None:
         print(f"Executed every minute {schedule!r} {datetime.now()!r}")
+        print()
 
     return pgq

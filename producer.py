@@ -34,7 +34,7 @@ async def create_database(db_name: str):
         print(f"Database {db_name} already exists")
 
 async def check_table_exists(conn, table_name: str):
-    print(f"Checking if {table_name} tbale already exists")
+    print(f"Checking if {table_name} table already exists")
     query = """
         SELECT EXISTS (
             SELECT 1 
@@ -44,11 +44,12 @@ async def check_table_exists(conn, table_name: str):
         );
     """
     result = await conn.fetchval(query, table_name)
+    print(f"{result=}")
     return result
 
 async def setup_database(db_name: str):
     print(f"Checking if {db_name} should be set up")
-    conn = conn_db(db_name)
+    conn = await conn_db(db_name)
     tables = ["pgqueuer", "pgqueuer_schedules", "pgqueuer_statistics"]
     tables_that_exist = 0
     for table in tables:
@@ -65,6 +66,7 @@ async def setup_database(db_name: str):
 
 async def main(N: int) -> None:
     await create_database("test_pgqueuer")
+    await setup_database("test_pgqueuer")
     print(f"enqueuing {N} items")
     conn = await asyncpg.connect(
         user="test1234",
@@ -85,3 +87,5 @@ async def main(N: int) -> None:
 if __name__ == "__main__":
     N = 1_000 if len(sys.argv) == 1 else int(sys.argv[1])
     asyncio.run(main(N))
+    # asyncio.run(setup_database("test_pgqueuer"))
+    # asyncio.run(create_database("test_pgqueuer"))

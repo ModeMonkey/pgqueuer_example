@@ -1,0 +1,1 @@
+pgq run consumer.main
