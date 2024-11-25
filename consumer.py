@@ -23,7 +23,8 @@ async def main() -> PgQueuer:
     # Entrypoint for jobs whose entrypoint is named 'fetch'.
     @pgq.entrypoint("fetch")
     async def process_message(job: Job) -> None:
-        print(f"Processed message: {job!r}")
+        print(f"Processed message:")
+        print(dict(job))
         print()
 
     # Define and register recurring tasks using cron expressions
